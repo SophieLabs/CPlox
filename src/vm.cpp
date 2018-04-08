@@ -28,6 +28,14 @@ namespace cplox
 
 		for(;;) {
 #ifdef DEBUG_TRACE_EXECUTION
+			printf("          ");
+			for(Value const& value : stack)
+			{
+				printf("[ ");
+				printValue(value);
+				printf(" ]");
+			}
+			printf("\n");
 			disassembleInstruction(chunk, ip - &(chunk.code[0]));
 #endif
 			uint8_t instruction;
@@ -36,21 +44,34 @@ namespace cplox
 			case OpCode::OP_CONSTANT:
 			{
 				Value constant = read_constant();
-				printValue(constant);
-				printf("\n");
+				push(constant);
 				break;
 			}
 			case OpCode::OP_CONSTANT_LONG:
 			{
 				Value constant = read_long_constant();
-				printValue(constant);
-				printf("\n");
+				push(constant);
 				break;
 			}
 			case OpCode::OP_RETURN:
+				printValue(pop());
+				printf("\n");
 				return InterpretResult::OK;
 			}
 		}
 		return InterpretResult();
+	}
+
+	void VM::push(Value & value)
+	{
+		stack.emplace_back(value);
+	}
+
+	Value VM::pop()
+	{
+		// This will need runtime error checking
+		Value ret = stack.back();
+		stack.pop_back();
+		return ret;
 	}
 }
