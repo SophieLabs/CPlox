@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,6 +116,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\chunk.cpp" />
+    <ClCompile Include="src\debug.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\value.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\chunk.hpp" />
+    <ClInclude Include="include\common.hpp" />
+    <ClInclude Include="include\debug.hpp" />
+    <ClInclude Include="include\value.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
