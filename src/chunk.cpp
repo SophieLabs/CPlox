@@ -2,9 +2,10 @@
 
 namespace cplox
 {
-	void writeChunk(Chunk& chunk, uint8_t byte)
+	void writeChunk(Chunk& chunk, uint8_t byte, int line)
 	{
 		chunk.code.emplace_back(byte);
+		chunk.lines.emplace_back(line);
 	}
 
 	int addConstant(Chunk & chunk, Value value)
