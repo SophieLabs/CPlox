@@ -25,7 +25,7 @@ namespace cplox
 		access for debugging */
 		std::vector<Value> stack;
 
-		void push(Value& value);
+		void push(Value value);
 		Value pop();
 	};
 }

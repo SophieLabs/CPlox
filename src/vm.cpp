@@ -25,6 +25,13 @@ namespace cplox
 		auto read_byte = [this]() { return *ip++; };
 		auto read_constant = [this, &chunk, &read_byte]() { return chunk.constants[read_byte()]; };
 		auto read_long_constant = [this, &chunk, &read_byte]() { return chunk.constants[read_byte() | (read_byte() << 8) | (read_byte() << 16)]; };
+		/** Replace this macro later once I have a better idea of how the dynamic typing will work */
+#define BINARY_OP(op) \
+	do { \
+		double b = pop(); \
+		double a = pop(); \
+		push(a op b); \
+	} while(false)
 
 		for(;;) {
 #ifdef DEBUG_TRACE_EXECUTION
@@ -53,16 +60,23 @@ namespace cplox
 				push(constant);
 				break;
 			}
+			case OpCode::OP_NEGATE:
+				push(-pop());
+				break;
+			case OpCode::OP_ADD:		BINARY_OP(+); break;
+			case OpCode::OP_SUBTRACT:	BINARY_OP(-); break;
+			case OpCode::OP_MULTIPLY:	BINARY_OP(*); break;
+			case OpCode::OP_DIVIDE:		BINARY_OP(/); break;
 			case OpCode::OP_RETURN:
 				printValue(pop());
 				printf("\n");
 				return InterpretResult::OK;
 			}
 		}
-		return InterpretResult();
+#undef BINARY_OP
 	}
 
-	void VM::push(Value & value)
+	void VM::push(Value value)
 	{
 		stack.emplace_back(value);
 	}

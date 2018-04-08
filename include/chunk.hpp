@@ -11,6 +11,11 @@ namespace cplox
 	enum OpCode : uint8_t {
 		OP_CONSTANT,
 		OP_CONSTANT_LONG,	/** For accessing more than 256 constants. Uses 3 byte operand */
+		OP_NEGATE,			/** Unary negation */
+		OP_ADD,
+		OP_SUBTRACT,
+		OP_MULTIPLY,
+		OP_DIVIDE,
 		OP_RETURN,
 	};
 
