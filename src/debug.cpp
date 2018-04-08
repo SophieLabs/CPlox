@@ -29,6 +29,15 @@ namespace cplox
 		return offset + 2;
 	}
 
+	static int longConstantInstruction(std::string const& name, Chunk& chunk, int offset)
+	{
+		int constant = chunk.code[offset + 1] | (chunk.code[offset + 2] << 8) | (chunk.code[offset + 3] << 16);
+		printf("%-16s %4d '", name.c_str(), constant);
+		printValue(chunk.constants[constant]);
+		printf("'\n");
+		return offset + 4;
+	}
+
 	int disassembleInstruction(Chunk & chunk, int offset)
 	{
 		printf(" %04d ", offset);
@@ -49,6 +58,8 @@ namespace cplox
 		{
 		case OpCode::OP_CONSTANT:
 			return constantInstruction("OP_CONSTANT", chunk, offset);
+		case OpCode::OP_CONSTANT_LONG:
+			return longConstantInstruction("OP_CONSTANT_LONG", chunk, offset);
 		case OpCode::OP_RETURN:
 			return simpleInstruction("OP_RETURN", offset);
 		default:

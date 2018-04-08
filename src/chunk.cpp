@@ -17,6 +17,21 @@ namespace cplox
 		}
 	}
 
+	void writeConstant(Chunk & chunk, Value value, int line)
+	{
+		int index = addConstant(chunk, value);
+		if(index < 256) {
+			writeChunk(chunk, OpCode::OP_CONSTANT, line);
+			writeChunk(chunk, index, line);
+		}
+		else {
+			writeChunk(chunk, OpCode::OP_CONSTANT_LONG, line);
+			writeChunk(chunk, index, line);
+			writeChunk(chunk, index >> 8, line);
+			writeChunk(chunk, index >> 16, line);
+		}
+	}
+
 	int addConstant(Chunk & chunk, Value value)
 	{
 		writeValueArray(chunk.constants, value);
