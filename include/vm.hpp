@@ -15,16 +15,26 @@ namespace cplox
 	public:
 		VM();
 		~VM();
+
+		/**
+		 * Runs the code located in chunk and gives result
+		 */
 		InterpretResult interpret(Chunk& chunk);
+
 	private:
 		/** Instruction pointer. Points to next instruction */
 		uint8_t * ip;
+
+		/**
+		 * Implementation for running the code in a chunk
+		 */
 		InterpretResult run(Chunk& chunk);
 
 		/** Stack for VM. Actually a vector to allow random
 		access for debugging */
 		std::vector<Value> stack;
 
+		/** Stack management functions */
 		void push(Value value);
 		Value pop();
 	};

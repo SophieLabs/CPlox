@@ -12,10 +12,10 @@ namespace cplox
 		OP_CONSTANT,
 		OP_CONSTANT_LONG,	/** For accessing more than 256 constants. Uses 3 byte operand */
 		OP_NEGATE,			/** Unary negation */
-		OP_ADD,
-		OP_SUBTRACT,
-		OP_MULTIPLY,
-		OP_DIVIDE,
+		OP_ADD,				/** Binary addition */
+		OP_SUBTRACT,		/** Binary subtraction */
+		OP_MULTIPLY,		/** Binary multiplication */
+		OP_DIVIDE,			/** Binary division */
 		OP_RETURN,
 	};
 
@@ -33,6 +33,12 @@ namespace cplox
 		ValueArray constants;
 	};
 
+	/**
+	 * Write data to chunk
+	 * \param chunk - Byte chunk to access
+	 * \param byte - Byte to append to chunk
+	 * \param line - Source line number
+	 */
 	void writeChunk(Chunk& chunk, uint8_t byte, int line);
 	
 	/**
@@ -44,6 +50,12 @@ namespace cplox
 	 */
 	void writeConstant(Chunk& chunk, Value value, int line);
 
+	/**
+	 * Add a constant to the chunk's constant register
+	 * \param chunk - Chunk to modify
+	 * \param value - Value to add to register
+	 * \return Index in register
+	 */
 	int addConstant(Chunk& chunk, Value value);
 	
 	/**
