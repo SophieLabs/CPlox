@@ -22,18 +22,18 @@ namespace cplox
 
 	static int constantInstruction(std::string const& name, Chunk& chunk, int offset)
 	{
-		uint8_t constant = chunk.code[offset + 1];
-		printf("%-16s %4d '", name.c_str(), constant);
-		printValue(chunk.constants[constant]);
+		uint8_t constantIdx = chunk.code[offset + 1];
+		printf("%-16s %4d '", name.c_str(), constantIdx);
+		printValue(chunk.constants[constantIdx]);
 		printf("'\n");
 		return offset + 2;
 	}
 
 	static int longConstantInstruction(std::string const& name, Chunk& chunk, int offset)
 	{
-		int constant = chunk.code[offset + 1] | (chunk.code[offset + 2] << 8) | (chunk.code[offset + 3] << 16);
-		printf("%-16s %4d '", name.c_str(), constant);
-		printValue(chunk.constants[constant]);
+		int constantIdx = chunk.code[offset + 1] | (chunk.code[offset + 2] << 8) | (chunk.code[offset + 3] << 16);
+		printf("%-16s %4d '", name.c_str(), constantIdx);
+		printValue(chunk.constants[constantIdx]);
 		printf("'\n");
 		return offset + 4;
 	}
