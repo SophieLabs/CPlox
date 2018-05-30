@@ -111,15 +111,14 @@ namespace cplox
 	}
 
 	void VM::runFile(const char* path) {
-		char* source = readFile(path);
-		cplox::InterpretResult result = interpret(source);
-		free(source);
+		auto source = readFile(path);
+		cplox::InterpretResult result = interpret(source.get());
 
 		if(result == cplox::InterpretResult::COMPILE_ERROR) exit(65);
 		if(result == cplox::InterpretResult::RUNTIME_ERROR) exit(70);
 	}
 
-	char* VM::readFile(const char* path) {
+	std::unique_ptr<char[]> VM::readFile(const char* path) {
 		FILE* file = fopen(path, "rb");
 
 		if(file == NULL) {
@@ -130,13 +129,13 @@ namespace cplox
 		size_t fileSize = ftell(file);
 		rewind(file);
 
-		char* buffer = static_cast<char*>(malloc(fileSize + 1));
-		if(buffer == nullptr) {
+		std::unique_ptr<char[]> buffer(new char[fileSize + 1]);
+		if(!buffer) {
 			fprintf(stderr, "Not enough memory to read \"%s\".\n", path);
 			exit(74);
 		}
 
-		size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
+		size_t bytesRead = fread(buffer.get(), sizeof(char), fileSize, file);
 		if(bytesRead < fileSize) {
 			fprintf(stderr, "Could not read file \"%s\".\n", path);
 			exit(74);

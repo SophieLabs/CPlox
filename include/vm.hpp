@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chunk.hpp"
+#include <memory>
 
 namespace cplox
 {
@@ -42,6 +43,6 @@ namespace cplox
 		void push(Value value);
 		Value pop();
 
-		char* readFile(const char* path);
+		std::unique_ptr<char[]> readFile(const char* path);
 	};
 }
