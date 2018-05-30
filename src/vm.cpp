@@ -1,5 +1,6 @@
 #include "../include/vm.hpp"
 #include "../include/common.hpp"
+#include "../include/compiler.hpp"
 #include "../include/debug.hpp"
 
 #include <gsl/gsl>
@@ -14,12 +15,14 @@ namespace cplox
 	{
 	}*/
 
-	InterpretResult VM::interpret(Chunk & chunk)
+	InterpretResult VM::interpret(const char* source)
 	{
-		ip = &(chunk.code[0]);
+		compile(source);
+		return InterpretResult::OK;
+		/*ip = &(chunk.code[0]);
 
 		InterpretResult const result = run(chunk);
-		return result;
+		return result;*/
 	}
 
 	InterpretResult VM::run(Chunk & chunk)
@@ -91,5 +94,56 @@ namespace cplox
 		Value const ret = stack.back();
 		stack.pop_back();
 		return ret;
+	}
+
+	void VM::repl() {
+		char line[1024];
+		for(;;) {
+			printf("> ");
+
+			if(!fgets(line, sizeof(line), stdin)) {
+				printf("\n");
+				break;
+			}
+
+			interpret(line);
+		}
+	}
+
+	void VM::runFile(const char* path) {
+		char* source = readFile(path);
+		cplox::InterpretResult result = interpret(source);
+		free(source);
+
+		if(result == cplox::InterpretResult::COMPILE_ERROR) exit(65);
+		if(result == cplox::InterpretResult::RUNTIME_ERROR) exit(70);
+	}
+
+	char* VM::readFile(const char* path) {
+		FILE* file = fopen(path, "rb");
+
+		if(file == NULL) {
+			fprintf(stderr, "Could not open file \"%s\".\n", path);
+			exit(74);
+		}
+		fseek(file, 0L, SEEK_END);
+		size_t fileSize = ftell(file);
+		rewind(file);
+
+		char* buffer = static_cast<char*>(malloc(fileSize + 1));
+		if(buffer == nullptr) {
+			fprintf(stderr, "Not enough memory to read \"%s\".\n", path);
+			exit(74);
+		}
+
+		size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
+		if(bytesRead < fileSize) {
+			fprintf(stderr, "Could not read file \"%s\".\n", path);
+			exit(74);
+		}
+		buffer[bytesRead] = '\0';
+
+		fclose(file);
+		return buffer;
 	}
 }

@@ -1,3 +1,5 @@
 /.vs/cplox/v15/Browse.VC.db
 .vs
 Debug
+Release
+cplox_cppcheck-cppcheck-build-dir

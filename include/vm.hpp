@@ -17,9 +17,13 @@ namespace cplox
 		//~VM();
 
 		/**
-		 * Runs the code located in chunk and gives result
-		 */
-		InterpretResult interpret(Chunk& chunk);
+		* Runs the code located in chunk and gives result
+		*/
+		InterpretResult interpret(const char* source);
+
+		void repl();
+
+		void runFile(const char* path);
 
 	private:
 		/** Instruction pointer. Points to next instruction */
@@ -37,5 +41,7 @@ namespace cplox
 		/** Stack management functions */
 		void push(Value value);
 		Value pop();
+
+		char* readFile(const char* path);
 	};
 }
