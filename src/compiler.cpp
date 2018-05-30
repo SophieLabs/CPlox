@@ -8,11 +8,11 @@ namespace cplox
 {
 	void compile(const char * source)
 	{
-		initScanner(source);
+		Scanner scanner(source);
 
 		int line = -1;
 		for(;;) {
-			Token token = scanToken();
+			Token token = scanner.scanToken();
 			if(token.line != line) {
 				printf("%4d ", token.line);
 				line = token.line;

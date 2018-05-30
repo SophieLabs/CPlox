@@ -36,6 +36,38 @@ namespace cplox
 		int line;
 	};
 
-	void initScanner(const char* source);
-	Token scanToken();
+
+	class Scanner{
+	public:
+		Scanner(const char* source);
+		Token scanToken();
+
+	private:
+		const char * start;
+		const char * current;
+		int line = { 1 };
+
+		bool isAtEnd() const { return *current == '\0';	}
+		char advance() {
+			++current;
+			return current[-1];
+		}
+		char peek() const { return *current; }
+		char peekNext() const {
+			if(isAtEnd()) return '\0';
+			return current[1];
+		}
+		bool match(char expected);
+		void skipWhitespace();
+		
+		TokenType checkKeyword(int start, int length, const char* rest, TokenType type) const;
+		TokenType identifierType() const;
+
+		Token identifier();
+		Token number();
+		Token string();
+		Token makeToken(TokenType type);
+		Token errorToken(const char* message);
+
+	};
 }

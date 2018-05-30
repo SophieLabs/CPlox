@@ -6,20 +6,7 @@
 
 namespace cplox
 {
-	struct Scanner {
-		const char * start;
-		const char * current;
-		int line;
-	};
-
-	Scanner scanner;
-
-	void initScanner(const char* source) {
-		scanner.start = source;
-		scanner.current = source;
-		scanner.line = 1;
-	}
-
+	// Helpful functions
 	static bool isAlpha(char c) {
 		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_');
 	}
@@ -28,38 +15,25 @@ namespace cplox
 		return (c >= '0' && c <= '9');
 	}
 
-	static bool isAtEnd() {
-		return *scanner.current == '\0';
-	}
 
-	static char advance() {
-		++scanner.current;
-		return scanner.current[-1];
-	}
+	Scanner::Scanner(const char * source) : start{ source }, current{ source }
+	{
+	}	
 
-	static char peek() {
-		return *scanner.current;
-	}
-
-	static char peekNext() {
-		if(isAtEnd()) return '\0';
-		return scanner.current[1];
-	}
-
-	static bool match(char expected) {
+	bool Scanner::match(char expected) {
 		if(isAtEnd()) return false;
-		if(*scanner.current != expected) return false;
+		if(*current != expected) return false;
 
-		++scanner.current;
+		++current;
 		return true;
 	}
 
-	static Token makeToken(TokenType type) {
+	Token Scanner::makeToken(TokenType type) {
 		Token token;
 		token.type = type;
-		token.start = scanner.start;
-		token.length = (int)(scanner.current - scanner.start);
-		token.line = scanner.line;
+		token.start = start;
+		token.length = (int)(current - start);
+		token.line = line;
 
 		return token;
 	}
@@ -74,17 +48,17 @@ namespace cplox
 	 * \param message - Compile time char literal containing error message
 	 * \return Token with type TokenType::ERROR
 	 */
-	static Token errorToken(const char* message) {
+	Token Scanner::errorToken(const char* message) {
 		Token token;
 		token.type = TokenType::ERROR;
 		token.start = message;
 		token.length = (int)strlen(message);
-		token.line = scanner.line;
+		token.line = line;
 
 		return token;
 	}
 
-	static void skipWhitespace() {
+	void Scanner::skipWhitespace() {
 		for(;;) {
 			char c = peek();
 			switch(c) {
@@ -94,7 +68,7 @@ namespace cplox
 				advance();
 				break;
 			case '\n':
-				++scanner.line;
+				++line;
 				advance();
 				break;
 			case '/':
@@ -112,24 +86,24 @@ namespace cplox
 		}
 	}
 
-	static TokenType checkKeyword(int start, int length,
-								  const char* rest, TokenType type) {
-		if(scanner.current - scanner.start == start + length &&
-		   memcmp(scanner.start + start, rest, length) == 0) {
+	TokenType Scanner::checkKeyword(int offset, int length, 
+									const char* rest, TokenType type) const {
+		if(current - start == offset + length &&
+		   memcmp(start + offset, rest, length) == 0) {
 			return type;
 		}
 
 		return TokenType::IDENTIFIER;
 	}
 
-	static TokenType identifierType() {
-		switch(scanner.start[0]) {
+	TokenType Scanner::identifierType() const {
+		switch(start[0]) {
 		case 'a': return checkKeyword(1, 2, "nd", TokenType::AND);
 		case 'c': return checkKeyword(1, 4, "lass", TokenType::CLASS);
 		case 'e': return checkKeyword(1, 3, "lse", TokenType::ELSE);
 		case 'f':
-			if(scanner.current - scanner.start > 1) {
-				switch(scanner.start[1]) {
+			if(current - start > 1) {
+				switch(start[1]) {
 				case 'a': return checkKeyword(2, 3, "lse", TokenType::FALSE);
 				case 'o': return checkKeyword(2, 1, "r", TokenType::FOR);
 				case 'u': return checkKeyword(2, 1, "n", TokenType::FUN);
@@ -143,8 +117,8 @@ namespace cplox
 		case 'r': return checkKeyword(1, 5, "eturn", TokenType::RETURN);
 		case 's': return checkKeyword(1, 4, "uper", TokenType::SUPER);
 		case 't':
-			if(scanner.current - scanner.start > 1) {
-				switch(scanner.start[1]) {
+			if(current - start > 1) {
+				switch(start[1]) {
 				case 'h': return checkKeyword(2, 2, "is", TokenType::THIS);
 				case 'r': return checkKeyword(2, 2, "ue", TokenType::TRUE);
 				}
@@ -156,13 +130,13 @@ namespace cplox
 		return TokenType::IDENTIFIER;
 	}
 
-	static Token identifier() {
+	Token Scanner::identifier() {
 		while(isAlpha(peek()) || isDigit(peek())) advance();
 
 		return makeToken(identifierType());
 	}
 
-	static Token number() {
+	Token Scanner::number() {
 		while(isDigit(peek())) advance();
 
 		// Look for a fractional part. Cannot specify number as 1. like in C++
@@ -176,9 +150,9 @@ namespace cplox
 		return makeToken(TokenType::NUMBER);
 	}
 
-	static Token string() {
+	Token Scanner::string() {
 		while(peek() != '"' && !isAtEnd()) {
-			if(peek() == '\n') ++scanner.line;
+			if(peek() == '\n') ++line;
 			advance();
 		}
 
@@ -189,10 +163,10 @@ namespace cplox
 		return makeToken(TokenType::STRING);
 	}
 
-	Token scanToken()
+	Token Scanner::scanToken()
 	{
 		skipWhitespace();
-		scanner.start = scanner.current;
+		start = current;
 
 		if(isAtEnd()) return makeToken(TokenType::END_OF_FILE);
 
@@ -224,4 +198,5 @@ namespace cplox
 		}
 		return errorToken("Unexpected character.");
 	}
+	
 }
