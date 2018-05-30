@@ -22,7 +22,7 @@ namespace cplox
 
 	static int constantInstruction(std::string const& name, Chunk& chunk, int offset)
 	{
-		uint8_t constantIdx = chunk.code[offset + 1];
+		uint8_t const constantIdx = chunk.code[offset + 1];
 		printf("%-16s %4d '", name.c_str(), constantIdx);
 		printValue(chunk.constants[constantIdx]);
 		printf("'\n");
@@ -31,7 +31,7 @@ namespace cplox
 
 	static int longConstantInstruction(std::string const& name, Chunk& chunk, int offset)
 	{
-		int constantIdx = chunk.code[offset + 1] | (chunk.code[offset + 2] << 8) | (chunk.code[offset + 3] << 16);
+		int const constantIdx = chunk.code[offset + 1] | (chunk.code[offset + 2] << 8) | (chunk.code[offset + 3] << 16);
 		printf("%-16s %4d '", name.c_str(), constantIdx);
 		printValue(chunk.constants[constantIdx]);
 		printf("'\n");
@@ -41,7 +41,7 @@ namespace cplox
 	int disassembleInstruction(Chunk & chunk, int offset)
 	{
 		printf(" %04d ", offset);
-		auto lineInfo = getLine(chunk, offset);
+		auto const lineInfo = getLine(chunk, offset);
 		if(offset > 0 && lineInfo.second == false)
 		{
 			printf("   | ");
@@ -53,7 +53,7 @@ namespace cplox
 
 
 
-		uint8_t instruction = chunk.code[offset];
+		uint8_t const instruction = chunk.code[offset];
 		switch(instruction)
 		{
 		case OpCode::OP_CONSTANT:

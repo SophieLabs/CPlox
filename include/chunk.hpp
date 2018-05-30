@@ -48,7 +48,7 @@ namespace cplox
 	 * \param value - New constant value
 	 * \param line - Source line number
 	 */
-	void writeConstant(Chunk& chunk, Value value, int line);
+	void writeConstant(Chunk& chunk, Value const& value, int line);
 
 	/**
 	 * Add a constant to the chunk's constant register
@@ -56,7 +56,7 @@ namespace cplox
 	 * \param value - Value to add to register
 	 * \return Index in register
 	 */
-	int addConstant(Chunk& chunk, Value value);
+	int addConstant(Chunk& chunk, Value const& value);
 	
 	/**
 	 * Finds the line number of the byte at offset and also tags if

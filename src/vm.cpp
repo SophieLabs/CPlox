@@ -2,21 +2,23 @@
 #include "../include/common.hpp"
 #include "../include/debug.hpp"
 
+#include <gsl/gsl>
+
 namespace cplox
 {
-	VM::VM()
+	/*VM::VM() : ip(nullptr)
 	{
 	}
 
 	VM::~VM()
 	{
-	}
+	}*/
 
 	InterpretResult VM::interpret(Chunk & chunk)
 	{
 		ip = &(chunk.code[0]);
 
-		InterpretResult result = run(chunk);
+		InterpretResult const result = run(chunk);
 		return result;
 	}
 
@@ -50,13 +52,13 @@ namespace cplox
 			{
 			case OpCode::OP_CONSTANT:
 			{
-				Value constant = read_constant();
+				Value const constant = read_constant();
 				push(constant);
 				break;
 			}
 			case OpCode::OP_CONSTANT_LONG:
 			{
-				Value constant = read_long_constant();
+				Value const constant = read_long_constant();
 				push(constant);
 				break;
 			}
@@ -71,6 +73,8 @@ namespace cplox
 				printValue(pop());
 				printf("\n");
 				return InterpretResult::OK;
+			default:
+				return InterpretResult::RUNTIME_ERROR;
 			}
 		}
 #undef BINARY_OP
@@ -84,7 +88,7 @@ namespace cplox
 	Value VM::pop()
 	{
 		// This will need runtime error checking
-		Value ret = stack.back();
+		Value const ret = stack.back();
 		stack.pop_back();
 		return ret;
 	}

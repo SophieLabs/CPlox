@@ -13,8 +13,8 @@ namespace cplox
 
 	class VM {
 	public:
-		VM();
-		~VM();
+		//VM();
+		//~VM();
 
 		/**
 		 * Runs the code located in chunk and gives result
@@ -23,7 +23,7 @@ namespace cplox
 
 	private:
 		/** Instruction pointer. Points to next instruction */
-		uint8_t * ip;
+		uint8_t * ip = nullptr;
 
 		/**
 		 * Implementation for running the code in a chunk

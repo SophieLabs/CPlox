@@ -1,5 +1,7 @@
 #include "../include/chunk.hpp"
 
+#include <gsl/gsl>
+
 namespace cplox
 {
 	void writeChunk(Chunk& chunk, uint8_t byte, int line)
@@ -17,9 +19,9 @@ namespace cplox
 		}
 	}
 
-	void writeConstant(Chunk & chunk, Value value, int line)
+	void writeConstant(Chunk & chunk, Value const& value, int line)
 	{
-		int index = addConstant(chunk, value);
+		int const index = addConstant(chunk, value);
 		if(index < 256) {
 			writeChunk(chunk, OpCode::OP_CONSTANT, line);
 			writeChunk(chunk, index, line);
@@ -32,10 +34,10 @@ namespace cplox
 		}
 	}
 
-	int addConstant(Chunk & chunk, Value value)
+	int addConstant(Chunk & chunk, Value const& value)
 	{
 		writeValueArray(chunk.constants, value);
-		return static_cast<int>(chunk.constants.size() - 1);
+		return gsl::narrow_cast<int>(chunk.constants.size() - 1);
 	}
 
 	std::pair<int, bool> getLine(Chunk& chunk, int offset)
